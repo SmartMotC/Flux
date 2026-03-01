@@ -121,7 +121,6 @@ async def code_duel(websocket: WebSocket, code: str):
         pass
 
 
-# 🆕 Админ endpoint
 @app.post("/admin/tasks/add", tags=["Admin"])
 async def add_task(
         title: str,
@@ -147,7 +146,6 @@ async def add_task(
         return {"status": "✅ Задание добавлено!", "title": title}
 
 
-# 🆕 GET — все задания
 @app.get("/tasks", tags=["Admin"])
 async def get_tasks():
     """📋 Получить список заданий"""
@@ -172,11 +170,8 @@ async def get_tasks():
     return tasks
 
 
-# Добавь В КОНЕЦ main.py (10 строк!):
-
 @app.post("/tasks/{task_id}/check")
 async def check_code(task_id: int, code: str):
-    """✅ ПРОВЕРКА КОДА ИГРОКА"""
     async with aiosqlite.connect('tasks.db') as db:
         async with db.execute("SELECT test_code, expected_output FROM tasks WHERE id=?", (task_id,)) as c:
             task = await c.fetchone()
@@ -201,7 +196,6 @@ async def check_code(task_id: int, code: str):
         sys.stdout = old_stdout
         return {"correct": False, "error": str(e)}
 
-# Админ DELETE задание
 @app.delete("/admin/tasks/{task_id}")
 async def delete_task(task_id: int):
     async with aiosqlite.connect('tasks.db') as db:
